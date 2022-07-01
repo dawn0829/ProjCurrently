@@ -1,0 +1,162 @@
+{%extends 'base.html'%}
+{% block title %}
+    Detect    
+{% endblock  %}
+{% block navbar-content %}
+<i class="fas fa-stethoscope"></i>&nbsp;&nbsp;Detect
+{% endblock navbar-content %}
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        疲勞檢測專區
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="{% url 'meditation' %}">EEG靜態分析區</a></li>
+      <li><a class="dropdown-item" href="{% url 'quiz' %}">疲勞問卷</a></li>
+    </ul>
+  </li>
+{% endblock navbar-item %}
+{% block nav-btn %}
+<a class="btn btn-outline-danger border-light text-light btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Logout</a>
+{% endblock nav-btn %}
+
+  
+    
+{%block content%}
+<body>
+  
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+<div id="ECGcontainer"></div>
+
+<script>
+  var ECGdata = 0;
+  var ECGArray = [];
+
+  const linkInit = async ( method ) => {
+        try{
+            //use api return 200
+            const response = await axios.get('http://192.168.137.29/init',{
+                //delay 2s
+                timeout: 2000 
+            })
+
+            if(method) {
+                //delay over
+                method()
+            }
+        }
+        catch (e) {
+            console.log(e)
+            alert("Haven't connect to ESP32 yet!")
+        }
+  }
+
+  const getData = async () => {
+      try{
+          const response = await axios.get('http://192.168.137.29/test')
+          ECGdata = response?.data.val
+      
+      }
+      catch (e) {
+          console.log(e)
+      }
+
+      return ECGdata
+  }
+
+  Highcharts.chart('ECGcontainer', {
+
+    chart: {
+      type: 'spline',
+      animation: false,
+      events: {
+        load() {
+          const start2GetData = () => {
+            let chart = this,
+              series = chart.series[0];
+              console.log("startTime:"+(new Date()).getTime())
+            const test = setInterval(() => {
+            getData()
+            var x = (new Date()).getTime(),y;
+
+            for(i=0;i<ECGdata.length;i++){
+                x = (new Date()).getTime()
+                y=ECGdata[i]
+                ECGArray.push(y.toString())
+              if (chart.series[0].data.length < 500) {
+              series.addPoint(ECGdata[i], true, false);
+              } else {
+                series.addPoint(ECGdata[i], true, true);
+              }
+            }
+            if(ECGArray.length>5000){
+                    
+                    clearInterval(test);
+                    console.log(ECGArray);
+            }
+
+              
+            }, 20)
+
+          }
+          linkInit(
+              start2GetData
+          )
+        }
+      }
+    },
+    title: {
+                text: 'Real-Time ECG data'
+            },
+
+    time: {
+            useUTC: false
+        },
+
+    series: [{
+      name: 'ECG data',
+      data: [0]
+    }],
+
+    credits: false
+
+  });
+  $(document).ready(function(){
+            $('button').on('click', function() {
+            var tasks = ECGArray;
+            console.log(ECGArray)
+            $.ajax({
+                type: 'POST',
+                url: '/backend/',
+                data: {'tasks': ECGArray},
+            });
+        });
+        });
+</script>
+<button class="btn btn-primary" type="submit">Save</button>
+</body>
+{% for message in messages %}
+        {% if message.tags == 'success' %}    
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+            var m = "{{ message }}";
+            swal("Perfect !", m,"success");
+        </script>
+        {% endif %}
+{% endfor %}
+{%endblock content%}

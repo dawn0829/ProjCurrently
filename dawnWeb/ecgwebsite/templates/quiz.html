@@ -1,0 +1,118 @@
+{%extends 'base.html'%}
+{% block title %}
+    Background 
+{% endblock  %}
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        疲勞檢測專區
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="{% url 'meditation' %}">EEG靜態分析區</a></li>
+      <li><a class="dropdown-item" href="{% url 'quiz' %}">疲勞問卷</a></li>
+    </ul>
+  </li>
+{% endblock navbar-item %}
+{% block nav-btn %}
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger border-light btn-sm" id="btn-nav">Logout</a>
+{% endblock nav-btn %}
+{% block content %}
+<!-- Item	Describe	scale
+1	Do you feel have problems with tiredness now?	1–5
+2	Do you need to rest more now?	1–5
+3	Do you feel sleepy or drowsy now?	1–5
+4	Do you have problems starting things now?	1–5
+5	Do you start things without difficulty but get weak as you go on now?	1–5
+6	Are you lacking in energy now?	1–5
+7	Do you have less strength in your muscles now?	1–5
+8	Do you feel weak now?	1–5
+9	Do you have difficulty concentrating now?	1–5
+10	Do you have problems thinking clearly now?	1–5
+11	Do you make slips of tongue when speaking now?	1–5
+12	Do you find it more difficult to find the correct word now?	1–5
+13	How is your memory now?	1–5
+14	Have you lost interest in the things you used to do now?	1–5 -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10 col-lg-10">
+            <div class="border">
+                <div class="question bg-white p-3 border-bottom">
+                    <div class="d-flex flex-row justify-content-between align-items-center mcq">
+                        <h4>Fatigue Quiz</h4><span>(5 of 5*14)</span></div>
+                </div>
+                <div class="question bg-white p-3 border-bottom">
+                    <div class="d-flex flex-row align-items-center question-title">
+                        <h3 class="text-danger">Q1.</h3>
+                        <h5 class="mt-1 ml-2">Do you feel have problems with tiredness now?</h5>
+                    </div>
+                        <div class="ans ml-2">
+                            <label class="radio"> <input type="radio" name="brazil" value="brazil"> 
+                                <span>very Agree</span>
+                            </label>    
+                        </div><div class="ans ml-2">
+                            <label class="radio"> <input type="radio" name="Germany" value="Germany"> 
+                                <span>Agree</span>
+                            </label>    
+                        </div><div class="ans ml-2">
+                            <label class="radio"> <input type="radio" name="Indonesia" value="Indonesia"> 
+                                <span>so-so</span>
+                            </label>    
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio"> <input type="radio" name="Russia" value="Russia"> 
+                                <span>Disagree</span>
+                            </label>    
+                        </div>
+                        <div class="ans ml-2">
+                            <label class="radio"> <input type="radio" name="Russia" value="Russia"> 
+                                <span>very Disagree</span>
+                            </label>    
+                        </div>
+                    </div><br><br>
+                    <div class="question bg-white p-3 border-bottom">
+                        <div class="d-flex flex-row align-items-center question-title">
+                            <h3 class="text-danger">Q2.</h3>
+                            <h5 class="mt-1 ml-2">Do you need to rest more now?</h5>
+                        </div>
+                            <div class="ans ml-2">
+                                <label class="radio"> <input type="radio" name="brazil" value="brazil"> 
+                                    <span>very Agree</span>
+                                </label>    
+                            </div><div class="ans ml-2">
+                                <label class="radio"> <input type="radio" name="Germany" value="Germany"> 
+                                    <span>Agree</span>
+                                </label>    
+                            </div><div class="ans ml-2">
+                                <label class="radio"> <input type="radio" name="Indonesia" value="Indonesia"> 
+                                    <span>so-so</span>
+                                </label>    
+                            </div>
+                            <div class="ans ml-2">
+                                <label class="radio"> <input type="radio" name="Russia" value="Russia"> 
+                                    <span>Disagree</span>
+                                </label>    
+                            </div>
+                            <div class="ans ml-2">
+                                <label class="radio"> <input type="radio" name="Russia" value="Russia"> 
+                                    <span>very Disagree</span>
+                                </label>    
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white"><button class="btn btn-primary d-flex align-items-center btn-danger" type="button"><i class="fa fa-angle-left mt-1 mr-1"></i>&nbsp;previous</button><button class="btn btn-primary border-success align-items-center btn-success" type="button">Next<i class="fa fa-angle-right ml-2"></i></button></div>
+                </div>
+             </div>
+         </div>
+    </div>
+{% endblock content %}

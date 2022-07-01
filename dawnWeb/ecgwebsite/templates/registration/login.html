@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block nav-btn %}
+<a href="/" class="btn btn-outline-primary boder-light text-light btn-sm" id="btn-nav">Back</a>
+{% endblock nav-btn %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card p-3 border-dark">
+            <a class="btn btn-outline-dark mt-3" href="{% url 'register' %}"><i class="fas fa-lock">&nbsp;&nbsp; 註冊連結</i></a>
+            <form method="POST" autocomplete="off" novalidate>
+            {% csrf_token %}
+                <div class="input-group mb-3 mt-5">
+                    <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+                <div class="input-group mb-3 mt-5">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control" name="password" placeholder="password">
+                </div>
+                <input class="btn btn-primary btn-sm mt-4 mb-3" type="submit" value="Enter" id="btn-enter">
+            </form>    
+    </div>
+    <!-- Massage form background -->
+    {% if form.errors %}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        swal("Denied !", "Enter your data corrently.","error")
+    </script>
+    {% endif %}
+    <center id="heart">
+        <i class="text-primary fas fa-heartbeat fa-10x blink_me"></i>
+    </center>
+</div>
+{% endblock content %}

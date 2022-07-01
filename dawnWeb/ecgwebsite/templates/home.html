@@ -1,0 +1,61 @@
+{%extends 'base.html'%}
+{% load static %}
+{% block title %}
+    Home  
+{% endblock  %}
+{% block headcdn %}  
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% endblock headcdn %} 
+{% block nav-btn %}
+    <a href="{% url 'login' %}" class="btn btn-outline-info border-light btn-sm" id="btn-nav">Login</a>
+{% endblock nav-btn %}
+{%block content%}
+    <style>
+    .mask {
+        position: absolute;
+        background-size: cover;
+        background-position: center center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: .8;
+    }
+    .bg-gradient-dark {
+    background-image: linear-gradient(195deg,#42424a 0,#191919 100%);
+    }
+    .shadow-blur {
+    box-shadow: inset 0 0 1px 1px rgba(254,254,254,.9),0 20px 27px 0 rgba(0,0,0,.05)!important;
+    }
+    </style>
+    <div class="position-relative">
+        <video style="width: 100%;height: auto;" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop" loading="lazy"> 
+            <source src="./static/img/video.mp4" type="video/mp4"> 
+        </video> 
+        <span class="mask bg-gradient-dark"></span>   
+    </div>
+    
+    <!-- under -->
+    <div class="card card-body shadow-blur mx-3 mx-md-4 mt-n6 mb-4">
+         <section class="mb-5 py-5"> 
+             <div class="container"> 
+                 <div class="row"> 
+                     <div class="col-lg-6 mx-auto text-center pb-4"> 
+                         <h4 class="text-gradient text-info"> Have an issue with a product? </h4> 
+                         <h2> We are here to help. </h2> 
+                         <p class="lead"> We're constantly improving our products and services based on the feedback provided by customers and the <strong>Discord</strong> community. </p>
+                         </div>
+                         </div> 
+                         <div class="row"> 
+                            <div class="col-lg-6 mx-auto text-center pb-4"> 
+                                <h4 class="text-gradient text-info"> Email Support </h4> 
+                                <h2> We are here to help. </h2> 
+                                <p class="lead"> For pre-sales questions or product assistance, email us anytime at <u>w7823125@gmail.com</u>.</p>
+                                </div>
+                                </div> 
+                         
+                            </div> 
+                        </section>
+     </div>
+
+{% endblock %}

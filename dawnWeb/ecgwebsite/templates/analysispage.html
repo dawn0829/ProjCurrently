@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block title %}
+    Analysis  
+{% endblock  %}
+{% block navbar-content %}
+<i class="fas fa-stethoscope"></i>&nbsp;&nbsp;Analysis
+{% endblock navbar-content %}
+
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'meditation' %}">EEG靜態分析區</a>
+  </li>
+{% endblock navbar-item %}
+{% block nav-btn %}
+<a class="btn btn-outline-danger border-light text-light btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Logout</a>
+{% endblock nav-btn %}
+
+{%block content%}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/annotations.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<div id="container"></div>
+<script>
+// Data generated from http://www.bikeforums.net/professional-cycling-fans/1113087-2017-tour-de-france-gpx-tcx-files.html
+var elevationData = {{ECGdata}};
+var title = "{{filename}}";
+// Now create the chart
+Highcharts.chart('container', {
+
+    chart: {
+        type: 'area',
+        zoomType: 'x',
+        panning: true,
+        panKey: 'shift',
+        scrollablePlotArea: {
+            minWidth: 600
+        }
+    },
+
+    caption: {
+        text: '{{text}}'
+    },
+
+    title: {
+        text: title
+    },
+
+    
+
+    lang: {
+        accessibility: {
+            screenReaderSection: {
+                annotations: {
+                    descriptionNoPoints: '{annotationText}'
+                }
+            }
+        }
+    },
+
+    credits: {
+        enabled: false
+    },
+
+    annotations: [{
+        draggable: '',
+        labelOptions: {
+            backgroundColor: 'rgba(255,255,255,0.5)',
+            verticalAlign: 'top',
+            y: 15
+        },
+        labels: [  {
+            point: {
+                xAxis: 0,
+                yAxis: 0,
+                x: 1000,
+                y: 789
+            },
+            x: -10,
+            text: 'Right Bundle'
+        }, {
+            point: {
+                xAxis: 0,
+                yAxis: 0,
+                x: 159,
+                y: 443
+            },
+            text: 'Saint-Claude'
+        }]
+    }, {
+        draggable: '',
+        labels: []
+    }, {
+        draggable: '',
+        labelOptions: {
+            shape: 'connector',
+            align: 'right',
+            justify: false,
+            crop: true,
+            style: {
+                fontSize: '0.8em',
+                textOutline: '1px white'
+            }
+        },
+        labels: [{
+            point: {
+                xAxis: 0,
+                yAxis: 0,
+                x: 96.2,
+                y: 783
+            },
+        }, {
+            point: {
+                xAxis: 0,
+                yAxis: 0,
+                x: 134.5,
+                y: 540
+            },
+        
+        }, {
+            point: {
+                xAxis: 0,
+                yAxis: 0,
+                x: 172.2,
+                y: 925
+            },
+   
+        }]
+    }],
+
+    xAxis: {
+        labels: {
+            format: '{value} m'
+        },
+        minRange: 5,
+        title: {
+            text: 'Time'
+        },
+        accessibility: {
+            rangeDescription: 'Range: 0 to 13000ms.'
+        }
+    },
+
+    yAxis: {
+        startOnTick: true,
+        endOnTick: false,
+        maxPadding: 0.35,
+        title: {
+            text: null
+        },
+        labels: {
+            format: '{value} '
+        },
+        accessibility: {
+            description: 'Elevation',
+            rangeDescription: 'Range: 0 to 1,553 meters'
+        }
+    },
+
+    tooltip: {
+        headerFormat: 'Time: {point.x:.1f} ms<br>',
+        pointFormat: '{point.y} /1241V',
+        shared: true
+    },
+
+    legend: {
+        enabled: false
+    },
+
+    series: [{
+        data: elevationData,
+        lineColor: Highcharts.getOptions().colors[1],
+        color: Highcharts.getOptions().colors[2],
+        fillOpacity: 0.5,
+        name: 'Elevation',
+        marker: {
+            enabled: false
+        },
+        threshold: null
+    }]
+
+});</script>
+
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Well done!</h4>
+    <p>測量完成以下為檢查結果</p>
+    <hr>
+    HR:<input class="mb-0" value="{{HR}}">(bps).</p>
+    檢測到<input class="mb-0" value="{{peak}}">個波&nbsp;
+    辨識結果:N<input class="mb-0" value="{{peak}}">個波&nbsp;
+    辨識結果:R<input class="mb-0" value="0">個波&nbsp;
+    辨識結果:L<input class="mb-0" value="0">個波&nbsp;
+    辨識結果:V<input class="mb-0" value="0">個波&nbsp;
+    HRV index:<br> &nbsp;
+    
+    {{index}}<br>
+</div>
+{%endblock content%}

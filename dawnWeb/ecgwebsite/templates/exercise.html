@@ -1,0 +1,42 @@
+{%extends 'base.html'%}
+
+{% block title %}
+    Home  
+{% endblock  %}
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        疲勞檢測專區
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="{% url 'meditation' %}">EEG靜態分析區</a></li>
+      <li><a class="dropdown-item" href="{% url 'quiz' %}">疲勞問卷</a></li>
+    </ul>
+  </li>
+{% endblock navbar-item %}
+{% block nav-btn %}
+<a class="btn btn-outline-danger border-light text-light btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Logout</a>
+{% endblock nav-btn %}
+{%block content%}
+    <style>
+        body{
+            background-image: url("https://google.github.io/mediapipe/images/mobile/pose_classification_pushups_and_squats.gif");
+            background-position: 0px;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
+{%endblock content%}

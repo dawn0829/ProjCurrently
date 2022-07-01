@@ -1,0 +1,31 @@
+/*start*/
+html,
+body{
+    height:100%;
+    margin: 0;
+    max-width: 100%;
+}
+/* navbar */
+#btn-nav{
+    width: 85px;
+    height: 25px;
+    float: right;
+    margin-right: 25px;
+    margin-top: 2px;
+    
+}
+
+
+/*footer*/
+.wrapper{
+    min-height:100%;
+    margin-bottom:-50px;;
+}
+#footer,
+.push{
+    height: 50px;
+}
+
+@media screen and (min-width:800px) {
+    
+}

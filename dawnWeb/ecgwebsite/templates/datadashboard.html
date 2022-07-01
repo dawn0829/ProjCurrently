@@ -1,0 +1,80 @@
+{%extends 'base.html'%}
+{% block title %}
+    Background 
+{% endblock  %}
+{% block nav-btn %}
+<div class="text-lignt" id="sidebar" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+    <i class="fas fa-bars ">  </i>
+</div>
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger border-light btn-sm" id="btn-nav">Logout</a>
+{% endblock nav-btn %}
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        疲勞檢測專區
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="{% url 'meditation' %}">EEG靜態分析區</a></li>
+      <li><a class="dropdown-item" href="{% url 'quiz' %}">疲勞問卷</a></li>
+    </ul>
+  </li>
+{% endblock navbar-item %}
+{%block body-sidebar%}
+<div class="d-grid gap-2">
+    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#LogoutModal">Logout</button>   
+</div>
+
+{%endblock body-sidebar%}
+{% block content %}
+<div class="container">
+    <br><br>
+    <div class="d-flex justify-content-between">
+    <a href="{% url 'detect' %}" class="btn btn-outline-primary btn-sm"><i class="fas fa-plus"></i>&nbsp;&nbsp; 增新紀錄</a>  
+    <span>
+        Welcome: <strong><span class="text-primary">{{user.get_username}}</span></strong>
+    </span></div>
+
+    <!-- input search -->
+    <form>
+        <div class="input-group input-group-sm mb-3 mt-4">
+            <input name="q" type="text" class="form-control" placeholder="Search for..." value="{{ request.GET.q }}">
+            <button class="btn btn-secondary"><i class="fas fa-search"></i></button>
+            <a href="{% url 'backend' %}" class="btn btn-dark" style="margin-left: 2px;"><i class="fas fa-sync-alt"></i></a>
+        </div>
+    </form>
+
+    <center>
+        <table class="table table-bordered table-sm mt-4" style="text-align: center; font-size: 14px;">
+            <thead class="table-secondary">
+                <tr>
+                    <th style="width: 25%">紀錄</th>
+                    <th style="width: 25%">時間</th>
+                    <th style="width: 25%">可視化圖表</th>
+                    <th style="width: 25%">刪除</th>
+                </tr>
+            </thead>
+            <!-- Datafrom backend -->
+            {% for record in records %}
+            <tr>
+                <td>{{ record.ecgrecord }}</td>
+                <td>{{ record.detecttime }}</td>  
+                <td><a href="/analysis/" class="btn btn-primary" title="viewRecord"><i class="fa-solid fa-eye"></a></i></td>
+                <td><a href="/delete_rec/" class="btn btn-primary" title="Edit Patient"><i class="fas fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </center>
+</div>
+{% endblock content %}

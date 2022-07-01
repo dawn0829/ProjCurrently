@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}
+    Add   
+{% endblock  %}
+{% block navbar-content %}
+<i class="fas fa-stethoscope"></i>&nbsp;&nbsp;DashBoard
+{% endblock navbar-content %}
+{% block navbar-item %}
+<a class="navbar-brand flex-grow-1" href="#" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                        
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 測量
+</a>
+<a class="navbar-brand flex-grow-1" href="#" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 歷史紀錄
+</a> 
+<a class="navbar-brand flex-grow-1" href="#" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 分析區
+</a> 
+{% endblock navbar-item %}
+{% block nav-btn %}
+<a class="btn btn-outline-danger border-light text-light btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Logout</a>
+{% endblock nav-btn %}
+{% block navbar-item %}
+<a class="navbar-brand flex-grow-1" href="{% url 'backend' %}" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                        
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 測量
+</a>
+<a class="navbar-brand flex-grow-1" href="{% url 'history' %}" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 歷史紀錄
+</a> 
+<a class="navbar-brand flex-grow-1" href="{% url 'analysis' %}" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; ECG訊號分析區
+</a> 
+<a class="navbar-brand flex-grow-1" href="{% url 'exercise' %}" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; 動態ECG分析區
+</a> 
+<a class="navbar-brand flex-grow-1" href="{% url 'meditation' %}" style="text-align: center; color: #f1f1f1; margin-left: 25px;">                          
+    <i class="fa-solid fa-screwdriver-wrench"></i>&nbsp;&nbsp; EEG靜態分析區
+</a> 
+{% endblock navbar-item %}
+{% block content %}
+
+
+
+
+{% endblock content %}

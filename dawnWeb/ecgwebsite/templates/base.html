@@ -1,0 +1,83 @@
+<!doctype html>
+{% load static %}
+{% load pwa %}
+<html>
+    <head>
+        {% progressive_web_app_meta %} 
+         
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=0.8, maximum-scale=2.0">        
+        <meta charset="utf-8">    
+        <!-- bootstrap5CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- frontawesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" integrity="sha384-/frq1SRXYH/bSyou/HUp/hib7RVN1TawQYja658FEOodR/FQBKVqT9Ol+Oz3Olq5" crossorigin="anonymous">
+        <!-- style.css -->
+        {% block headcdn %}  
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+        {% endblock headcdn %} 
+        <title>{%block title%}Dawn's Website{%endblock%}</title>
+
+    </head>
+    <body>       
+                    <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+
+              <a class="navbar-brand" href="/">Dawn'sECGWebsite</a>
+       
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% block navbar-item %}
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">首頁</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'usetool' %}">產品軟硬體使用</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'guide' %}">測量須知
+                    </a>
+                  </li>
+                {% endblock navbar-item %}
+                </ul>
+                <form class="d-flex">
+                    {% block nav-btn %}
+                    <a class="btn btn-outline-info border-light btn-sm" id="btn-nav" href="{% url 'login' %}">Login</a>
+                    {% endblock nav-btn %}
+                </form>
+              </div>
+            </div>
+          </nav>
+
+            <!-- Block from other place -->
+            {% block content %} {% endblock content%}
+          {% block footer %}{% endblock footer %}
+        <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp; Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <span class="text-danger"><i class="fas fa-sign-out-alt fa-3x mt-4"></i></span>
+                        <div class="mt-4 text-danger">Are you sure want to exit the system ?</div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'logout' %}" type="button" class="btn btn-outline-danger btn-sm">Logout</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+    
+    <!-- bootstrap5JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <!-- jquery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>    
+    </body>
+</html>
