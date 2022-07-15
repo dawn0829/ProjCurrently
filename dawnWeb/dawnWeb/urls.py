@@ -26,7 +26,7 @@ urlpatterns = [
     path('', views.frontend, name="frontend"),
     path('backend/',views.backend, name="backend"),
     path('add/',views.add, name="add"),
-    path('analysis/',views.analysispage, name="analysis"),
+    path('analysis/<str:rec_id>',views.analysis, name="analysis"),
     path('history/',views.history, name="history"),
     path('quiz/',views.quiz, name="quiz"),
     path('exercise/',views.exercise, name="exercise"),
@@ -34,5 +34,5 @@ urlpatterns = [
     path('guide/',views.guide, name="guide"),path('usetool/',views.usetool, name="usetool"),
     path('detect/',views.detect,name="detect"),
     path('',include('lineNotify.urls')),
-    path('delete_rec/', views.delete_rec, name="delete_rec"),
+    path('delete_rec/<str:rec_id>', views.delete_rec, name="delete_rec"),
 ]

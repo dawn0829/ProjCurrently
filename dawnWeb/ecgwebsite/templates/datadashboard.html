@@ -15,9 +15,7 @@
   <li class="nav-item">
     <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
-  </li>
+  
   <li class="nav-item">
     <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
   </li>
@@ -70,11 +68,20 @@
             <tr>
                 <td>{{ record.ecgrecord }}</td>
                 <td>{{ record.detecttime }}</td>  
-                <td><a href="/analysis/" class="btn btn-primary" title="viewRecord"><i class="fa-solid fa-eye"></a></i></td>
-                <td><a href="/delete_rec/" class="btn btn-primary" title="Edit Patient"><i class="fas fa-trash-alt"></i></a></td>
+                <td><a href="/analysis/{{record.id}}" class="btn btn-primary" title="viewRecord"><i class="fa-solid fa-eye"></a></i></td>
+                <td><a href="/delete_rec/{{record.id}}" class="btn btn-primary" title="Edit Patient"><i class="fas fa-trash-alt"></i></a></td>
             </tr>
             {% endfor %}
         </table>
     </center>
 </div>
-{% endblock content %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}    
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+            var m = "{{ message }}";
+            swal("Perfect !", m,"success");
+        </script>
+        {% endif %}
+    {% endfor %}
+{%endblock content%}

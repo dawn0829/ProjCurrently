@@ -28,20 +28,13 @@ def backend(request):
     records = models.ECGRecord.objects.all()
     return render(request, 'datadashboard.html',context={'records':records})
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='login')
-def delete_rec(request, userid):
-    record = models.ECGRecord.objects.get(id = userid)
-    record.delete()
-    messages.success(request, "Record removed successfully !")
-    return redirect('/backend')
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='/login/')
 def detect(request):
     if request.method=="POST":
         user = request.user
-
         tasks = request.POST.getlist("tasks[]")
         df = pd.DataFrame(tasks, columns=["ECGdata"])
         path=os.getcwd()+"/ECGRecord/"+str(user)+'/'
@@ -50,7 +43,7 @@ def detect(request):
             
         current_datetime = datetime.datetime.now()
         #save filename to database          
-        path+=str(current_datetime)+".csv"
+        path+=str(current_datetime).replace(':','')+".csv"
         df.to_csv(path, index=False)
 
         #to database
@@ -75,27 +68,29 @@ def add(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='/login/')
-def analysispage(request):
+def analysis(request,rec_id):
     user = request.user
-    path=os.getcwd()+"/ECGRecord/"+str(user)+'/'
-    filename = "2022-05-27 03:31:18.376276.csv"
-    print(models.ECGRecord.objects.all())
-    df = pd.read_csv(path+filename)
+    rec_id = rec_id
+    rec_name = models.ECGRecord.objects.get(id=rec_id).ecgrecord
+    rec_name = str(rec_name).replace(':','')
+    path=os.getcwd()+"/ECGRecord/"+str(user)+'/'+rec_name
+    df = pd.read_csv(path)
     ECGdata = list(df['ECGdata'])
     
-    
+    print(ECGdata)
     fs = 360
     ecgre = df.values.reshape(len(df))
     ecgre = resample(ecgre,500*23)
     rpeaks = ecg.christov_segmenter(ecgre, sampling_rate=fs)
 
     HR = len(rpeaks[0])/22*60
+
     # wave,wpredict =[],[]
     # for i in range(len(rpeaks[0])):
     #     print(tfmodel.predict_classes(wave[i].reshape(1,250)))       
     #     wave.append(ecgre[rpeaks[0][i]-100:rpeaks[0][i]+150])
     #     wpredict.append(tfmodel.predict_classes(wave[i].reshape(1,250)))
-    #MeanRR = 
+
 
     time_domain_features = get_time_domain_features(rpeaks[0])
     print(time_domain_features["sdnn"])
@@ -106,7 +101,7 @@ def analysispage(request):
     else:
         text="您的健康狀況良好，無檢測出阻滯及心律不整"
     print(time_domain_features)
-    context = {"ECGdata":ECGdata,"filename":filename,"HR":HR,"peak":len(rpeaks[0]),"index":time_domain_features,"text":text}
+    context = {"ECGdata":ECGdata,"filename":rec_name,"HR":HR,"peak":len(rpeaks[0]),"index":time_domain_features,"text":text}
     return render(request, "analysispage.html",context=context)
 
 
@@ -138,3 +133,13 @@ def usetool(request):
     return render(request, "intro/usetool.html")
 
 
+# crudfun
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='login')
+def delete_rec(request, rec_id):
+    record = models.ECGRecord.objects.get(id = rec_id)
+    record.delete()
+    messages.success(request, "Record removed successfully !")
+    return redirect('/backend')

@@ -12,9 +12,7 @@
   <li class="nav-item">
     <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'analysis' %}">ECG訊號分析區</a>
-  </li>
+
   <li class="nav-item">
     <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
   </li>
@@ -38,19 +36,38 @@
 <body>
   
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<div class="card">
+  <div class="card-body">
+    <input id="IPInput" type="text" value="192.168.xx.xx" />
+    <button onclick="connectIP()">connect ip</button>
+  </div>
+</div>
 <div id="ECGcontainer"></div>
 
 <script>
   var ECGdata = 0;
   var ECGArray = [];
-
+  
+  var flag = false;
+  function connectIP(){  
+    return new Promise((resolve,reject)=>{
+        IP=document.getElementById("IPInput").value;
+        resolve(IP);
+        flag = true;
+    })
+    
+   
+  }
+  
   const linkInit = async ( method ) => {
         try{
-            //use api return 200
-            const response = await axios.get('http://192.168.137.29/init',{
+            //use api return 200 
+            var IP=await connectIP();
+            console.log('conniting to http://'+String(IP)+'/init...')
+            const response = await axios.get('http://'+String(IP)+'/init',{
                 //delay 2s
                 timeout: 2000 
             })
@@ -61,62 +78,69 @@
             }
         }
         catch (e) {
-            console.log(e)
-            alert("Haven't connect to ESP32 yet!")
+            alert("Haven't connect to ESP32 yet!");
+            console.log(e);
         }
   }
 
   const getData = async () => {
       try{
-          const response = await axios.get('http://192.168.137.29/test')
-          ECGdata = response?.data.val
-      
+          console.log('conniting to http://'+String(IP)+'/test...')
+          const response = await axios.get('http://'+String(IP)+'/test')
+          ECGdata = response?.data.val     
       }
       catch (e) {
-          console.log(e)
+        alert("Haven't connect to ESP32 yet!");
+        console.log(e);
       }
 
       return ECGdata
   }
 
   Highcharts.chart('ECGcontainer', {
-
     chart: {
       type: 'spline',
       animation: false,
       events: {
         load() {
-          const start2GetData = () => {
+          const start2GetData = async() => {
             let chart = this,
               series = chart.series[0];
               console.log("startTime:"+(new Date()).getTime())
             const test = setInterval(() => {
-            getData()
-            var x = (new Date()).getTime(),y;
+              getData()
+              var x = (new Date()).getTime(),y;
 
-            for(i=0;i<ECGdata.length;i++){
-                x = (new Date()).getTime()
-                y=ECGdata[i]
-                ECGArray.push(y.toString())
-              if (chart.series[0].data.length < 500) {
-              series.addPoint(ECGdata[i], true, false);
-              } else {
-                series.addPoint(ECGdata[i], true, true);
+              for(i=0;i<ECGdata.length;i++){
+                  x = (new Date()).getTime()
+                  y=ECGdata[i]
+                  ECGArray.push(y.toString())
+                if (chart.series[0].data.length < 500) {
+                series.addPoint(ECGdata[i], true, false);
+                } else {
+                  series.addPoint(ECGdata[i], true, true);
+                }
               }
-            }
-            if(ECGArray.length>5000){
-                    
-                    clearInterval(test);
-                    console.log(ECGArray);
-            }
-
-              
+              if(ECGArray.length>5000){            
+                      clearInterval(test);
+                      console.log(ECGArray);
+              }      
             }, 20)
 
           }
-          linkInit(
-              start2GetData
-          )
+       
+          function checkFlag() {
+              if(flag === false) {
+                window.setTimeout(checkFlag, 1000); /* this checks the flag every 100 milliseconds*/
+              } 
+              else {
+                    linkInit(
+                  start2GetData)
+              }
+          }
+          checkFlag();
+          
+       
         }
       }
     },
@@ -137,7 +161,7 @@
 
   });
   $(document).ready(function(){
-            $('button').on('click', function() {
+            $('#savebtn').click(function() {
             var tasks = ECGArray;
             console.log(ECGArray)
             $.ajax({
@@ -146,10 +170,9 @@
                 data: {'tasks': ECGArray},
             });
         });
-        });
+      });
 </script>
-<button class="btn btn-primary" type="submit">Save</button>
-</body>
+<button class="btn btn-primary savebtn">Save</button>
 {% for message in messages %}
         {% if message.tags == 'success' %}    
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -160,3 +183,4 @@
         {% endif %}
 {% endfor %}
 {%endblock content%}
+</body>
