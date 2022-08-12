@@ -16,6 +16,9 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, './ecgwebsite/static', 'serviceworker.js')
 
+#LineBotSetting
+CHANNEL_SECRET = "156d13d42316e5f47696f65c96b8e528"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -31,7 +34,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +43,8 @@ INSTALLED_APPS = [
     'ecgwebsite',
     'pwa',
     'register',
-    'lineNotify'
+    'lineNotify',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -73,7 +76,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dawnWeb.wsgi.application'
+ASGI_APPLICATION = "dawnWeb.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

@@ -35,4 +35,5 @@ urlpatterns = [
     path('detect/',views.detect,name="detect"),
     path('',include('lineNotify.urls')),
     path('delete_rec/<str:rec_id>', views.delete_rec, name="delete_rec"),
+    path('test', views.test,name="test")
 ]

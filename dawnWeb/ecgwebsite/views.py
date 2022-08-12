@@ -15,6 +15,9 @@ from tensorflow.keras import models as tfmodels
 from biosppy.signals import ecg
 from scipy.signal import resample
 from hrvanalysis import get_time_domain_features
+
+from linebot import LineBotApi
+from linebot.models import TextSendMessage
 tfmodel = tfmodels.load_model("ecgwebsite/testvaldata_model.h5")
 # Create your views here.
 def frontend(request):
@@ -22,7 +25,7 @@ def frontend(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='/login/')
-@csrf_exempt
+
 # prevent CSRF wrong
 def backend(request):
     records = models.ECGRecord.objects.all()
@@ -32,6 +35,7 @@ def backend(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='/login/')
+@csrf_exempt
 def detect(request):
     if request.method=="POST":
         user = request.user
@@ -58,7 +62,7 @@ def detect(request):
         
         return JsonResponse({"tasks": tasks}) 
     else:
-        return render(request, "DataVisual.html")
+        return render(request, "websocketConnect.html")
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='/login/')
@@ -101,6 +105,14 @@ def analysis(request,rec_id):
     else:
         text="您的健康狀況良好，無檢測出阻滯及心律不整"
     print(time_domain_features)
+
+    
+
+    lineBotAPI = LineBotApi('Q915Z4Su8P2PHAB9ytEU5Is//EOf4Sz307M+U6Cgyd441U+dWJfHsAwiUBydm4ruzjo8IqPxunYVIU52b0MA7VkOLTKlUf3bW4jx/U6+CjX0z9jizbcDfT/uDvbr/1qdTFTCZ3xtHI7oq6i41VxkfQdB04t89/1O/w1cDnyilFU=')
+    myID = 'Ub902bc6c0fd0fe8604704b0baeb75d04'
+
+    #傳訊息給特定的UserID
+    lineBotAPI.push_message(myID, TextSendMessage(text="您的健康狀況不佳，檢測出阻滯及心律不整"))
     context = {"ECGdata":ECGdata,"filename":rec_name,"HR":HR,"peak":len(rpeaks[0]),"index":time_domain_features,"text":text}
     return render(request, "analysispage.html",context=context)
 
@@ -143,3 +155,7 @@ def delete_rec(request, rec_id):
     record.delete()
     messages.success(request, "Record removed successfully !")
     return redirect('/backend')
+
+@csrf_exempt
+def test(request):
+    return render(request, "websocketConnect.html")

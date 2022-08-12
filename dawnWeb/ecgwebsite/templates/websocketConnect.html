@@ -1,0 +1,116 @@
+{%extends 'base.html'%}
+
+{% block title %}
+    Home  
+{% endblock  %}
+{% block navbar-item %}
+  <li class="nav-item">
+    <a class="nav-link active" href="{% url 'detect' %}">測量</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'backend' %}">歷史紀錄</a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'exercise' %}">動態ECG分析區</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        疲勞檢測專區
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <li><a class="dropdown-item" href="{% url 'meditation' %}">EEG靜態分析區</a></li>
+      <li><a class="dropdown-item" href="{% url 'quiz' %}">疲勞問卷</a></li>
+    </ul>
+  </li>
+{% endblock navbar-item %}
+{% block nav-btn %}
+<a class="btn btn-outline-danger border-light text-light btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Logout</a>
+{% endblock nav-btn %}
+{%block content%}
+        <script src="https://code.highcharts.com/stock/highstock.js"></script>
+        <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <body>
+        <div id="ECGcontainer"></div>
+    <script> 
+        var ECGdata;
+        var ECGArray = [];
+        let socket =new WebSocket('ws://10.10.131.171:8000/polData');
+
+        socket.onopen =function(e){
+            alert('Connection established');
+        };
+
+        
+
+        socket.onclose = function(e){
+            alert('Connection CLosed');
+        };
+
+
+        Highcharts.chart('ECGcontainer', {
+            chart: {
+                type: 'spline',
+                animation: false,
+                events: {
+                    load() {
+                        let chart = this,
+                        series = chart.series[0];
+
+                        socket.onmessage = function(e){
+                            ECGdata = JSON.parse(e.data).value; 
+                            datapoint = ECGdata.split(",").map( Number )
+
+                            for(i=0;i<datapoint.length-1;i++){
+                                ECGArray.push(datapoint[i])
+                                if (chart.series[0].data.length < 750) {
+                                    series.addPoint(datapoint[i], true, false);
+                                } else {
+                                    series.addPoint(datapoint[i], true, true);
+                                }
+                            }
+                            datapoint.forEach(element => console.log(element));
+                            if(ECGArray.length>5000){
+                                console.log(ECGArray);
+                                socket.close()
+                            }
+                        };
+                    }
+                }
+            },
+                title: {
+                            text: 'Real-Time ECG data'
+                        },
+            
+                time: {
+                        useUTC: false
+                    },
+            
+                series: [{
+                    name: 'ECG data',
+                    data: [0]
+                }],
+                credits: false           
+            });      
+        $(document).ready(function(){
+            $('#savebtn').on('click', function() {
+            var tasks = ECGArray;
+            console.log(ECGArray)
+            $.ajax({
+                type: 'POST',
+                url: '/detect/',
+                data: {'tasks': ECGArray},
+            })
+            .then((res)=>{
+                console.log(`${window.location.origin}/backend`);
+                window.location.href = `${window.location.origin}/backend`;
+            });
+            
+            });
+        });  
+</script>
+<button class="btn btn-primary" id="savebtn" type="submit">Save</button>
+</body>
+{% endblock %}
